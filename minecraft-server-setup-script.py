@@ -1,10 +1,12 @@
 from urllib import request
 import os
+import sys
 from time import sleep
 
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 def check_if_folder_exists():
+    """Checks if the minecraft-server folder exists, creates it if not."""
     if not os.path.exists(f"{SCRIPT_PATH}/minecraft-server"):
         print("Server folder not present, creating...")
         sleep(1)
@@ -14,7 +16,9 @@ def check_if_folder_exists():
     print("Server folder present, continuing...")
     sleep(1)
 
-def accept_eula(eula_path):
+
+def accept_eula(eula_path: str):
+    """Accepts the EULA by creating or updating the eula.txt file."""
     if not os.path.exists(eula_path):
         print("EULA file not found, creating...")
         with open(eula_path, 'w') as eula_file:
@@ -30,9 +34,10 @@ def accept_eula(eula_path):
                 print("EULA file updated successfully.")
             else:
                 print("EULA file already accepted, skipping modification...")
-    return
+
 
 def create_bat():
+    """Creates a start.bat file to run the Minecraft server with specified RAM allocation if there's none present."""
     bat_path = f"{SCRIPT_PATH}/minecraft-server/start.bat"
     if os.path.exists(bat_path):
         print("Start server batch file already exists, skipping creation.")
@@ -58,16 +63,17 @@ def create_bat():
         print("Start file already exists, skipping creation.")
 
 def download_server_file():
+    """Downloads the Minecraft fabric server jar file if it does not already exist."""
     server_path = f"{SCRIPT_PATH}/minecraft-server/server.jar"
     if os.path.exists(server_path):
         print("Server file already exists, skipping download.")
     else:
         print("Downloading server file...")
-        request.urlretrieve("https://meta.fabricmc.net/v2/versions/loader/1.21.5/0.16.14/1.0.3/server/jar", 
-                            f"{server_path}")
-    return
+        request.urlretrieve("https://meta.fabricmc.net/v2/versions/loader/1.21.5/0.16.14/1.0.3/server/jar", f"{server_path}")
+
 
 def setup_server():
+    """Sets up the Minecraft server by checking for the folder, downloading files, accepting EULA, and creating start file."""
     check_if_folder_exists()
     print("Setting up Minecraft server...")
     sleep(0.2)
@@ -94,7 +100,9 @@ def setup_server():
         print("Skipping recommended settings application.")
     print("You can now run the server by running the start.bat in the minecraft-server folder.")
 
+
 def install_optimization_mods():
+    """Installs optimization mods by downloading them from curseforge into the mods folder."""
     if not os.path.exists(f"{SCRIPT_PATH}/minecraft-server/mods"):
         print("Mods folder not found, creating...")
         os.makedirs(f"{SCRIPT_PATH}/minecraft-server/mods")
@@ -116,11 +124,12 @@ def install_optimization_mods():
     sleep(0.2)
     print("Optimization mods installed successfully.")
 
+
 def apply_recommended_settings():
+    """Applies recommended settings to the server.properties file."""
     if not os.path.exists(f"{SCRIPT_PATH}/minecraft-server/server.properties"):
         print("Server properties file not found, downloading...")
-        request.urlretrieve("https://raw.githubusercontent.com/Najfallik/minecraft-server-setup-script/main/server.properties",
-                            f"{SCRIPT_PATH}/minecraft-server/server.properties")
+        request.urlretrieve("https://raw.githubusercontent.com/Najfallik/minecraft-server-setup-script/main/server.properties", f"{SCRIPT_PATH}/minecraft-server/server.properties")
     else:
         print("Server properties file found, applying recommended settings...")
         with open(f"{SCRIPT_PATH}/minecraft-server/server.properties", 'r') as server_properties:
@@ -136,7 +145,9 @@ def apply_recommended_settings():
                 else:
                     server_properties.write(line)
 
+
 def main_menu():
+    """Displays the main menu and handles user input for server setup, mod installation, and settings application."""
     while True:
         print("\nWelcome to the Minecraft Server Setup Script")
         print("1 - Setup Server")
@@ -153,12 +164,15 @@ def main_menu():
             apply_recommended_settings()
         elif choice == 'q':
             print("Exiting...")
-            exit(0)
+            sys.exit(0)
         else:
             print("Invalid choice, please try again.")
 
+
 def main():
+    """Main function to start the script and display the main menu."""
     main_menu()
+
 
 if __name__ == "__main__":
     main()
