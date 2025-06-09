@@ -1,7 +1,7 @@
-from urllib import request
 import os
 import sys
 from time import sleep
+from urllib import request
 
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
